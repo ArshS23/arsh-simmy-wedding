@@ -47,3 +47,20 @@
     document.querySelectorAll('#our-wedding, #events, #location').forEach(section => sectionObserver.observe(section));
   }
 })();
+
+(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const bar = document.createElement('div');
+  bar.className = 'reading-progress';
+  bar.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(bar);
+  let scheduled = false;
+  function update() {
+    const distance = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = 'scaleX(' + (distance > 0 ? Math.min(1, Math.max(0, window.scrollY / distance)) : 0) + ')';
+    scheduled = false;
+  }
+  window.addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
